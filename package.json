@@ -13,9 +13,15 @@
     "name": "Tom Keffer",
     "email": "tkeffer@gmail.com"
   },
+  "contributors": [
+    {
+      "name": "Matthew Clark",
+      "url": "https://github.com/MaffooClock"
+    }
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/tkeffer/weert-js"
+    "url": "https://github.com/MaffooClock/weewx-weert"
   },
   "dependencies": {
     "async": "^3.2.4",
