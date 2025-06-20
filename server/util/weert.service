@@ -1,6 +1,6 @@
 [Unit]
 Description=WeeRT - Realtime weather logging
-Documentation=https://github.com/tkeffer/weert-js
+Documentation=https://github.com/MaffooClock/weewx-weert
 After=network.target
 
 [Service]

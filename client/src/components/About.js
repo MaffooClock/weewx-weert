@@ -38,7 +38,7 @@ export default function About() {
         </p>
 
         <p>
-          Source code and README can be found in the<a href="https://github.com/tkeffer/weert-js"> GitHub repository</a>
+          Source code and README can be found in the<a href="https://github.com/MaffooClock/weewx-weert"> GitHub repository</a>
         </p>
 
       </div>

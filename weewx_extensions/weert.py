@@ -5,7 +5,7 @@
 #
 
 #
-# See the WeeRT README file (https://github.com/tkeffer/weert-js)
+# See the WeeRT README file (https://github.com/MaffooClock/weewx-weert)
 # for instructions on how to install this uploader in weewx.
 #
 
