@@ -1,6 +1,6 @@
 # WeeRT for WeeWX
 
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+[![Code Style: Prettier](https://img.shields.io/badge/Code_Style-Prettier-F8BC45?logo=prettier&logoColor=white)](https://github.com/prettier/prettier) [![Made with Node.js](https://img.shields.io/badge/Node.js->=18-417e38?logo=node.js&logoColor=white)](https://nodejs.org) [![Made with Express](https://img.shields.io/badge/dynamic/json?label=Express&logo=express&color=f7e052&logoColor=white&query=%24.dependencies.express&url=https%3A%2F%2Fraw.githubusercontent.com%2FMaffooClock%2Fweewx-weert%2Frefs%2Fheads%2Fmaster%2Fpackage.json)](https://expressjs.com) [![Made with React](https://img.shields.io/badge/dynamic/json?label=React&logo=react&color=087EA4&logoColor=white&query=%24.dependencies.react&url=https%3A%2F%2Fraw.githubusercontent.com%2FMaffooClock%2Fweewx-weert%2Frefs%2Fheads%2Fmaster%2Fclient%2Fpackage.json)](https://reactjs.org) [![InfluxDB - v1.8.10](https://img.shields.io/badge/InfluxDB-v1.8.10-D30971?logo=influxdb&logoColor=white)](https://www.influxdata.com/products/influxdb/)
 
 ## ~~Archived~~ _Forked!_
 
@@ -13,8 +13,8 @@ So, I decided to fork this project to try my best to not only keep it alive, but
 WeeRT is a realtime extension for [WeeWX](http://weewx.com), open-source software for your weather station. It consists of three, independent parts:
 
 - The WeeRT uploader. This is a [WeeWX service](http://weewx.com/docs/customizing.htm#The_weeWX_service_architecture), which arranges for your data to be uploaded from WeeWX to the WeeRT server.
-- The WeeRT server, a real-time logging and display server, written in Javascript and running on [Node](https://nodejs.org/en/), using the [Express framework](https://expressjs.com/). This server listens for real-time data updates from WeeWX, then archives them in an [InfluxDB](https://www.influxdata.com/time-series-platform/influxdb/) database. It also acts as a webserver for the WeeRT client.
-- The WeeRT browser client, written in Javascript using [React](https://reactjs.org/) and [Redux](https://redux.js.org/). It runs in a browser and interacts with the WeeRT server.
+- The WeeRT server, a real-time logging and display server, written in Javascript and running on [Node](https://nodejs.org/en/), using the [Express framework](https://expressjs.com/). This server listens for real-time data updates from WeeWX, then archives them in an [InfluxDB](https://www.influxdata.com/products/influxdb/) database. It also acts as a webserver for the WeeRT client.
+- The WeeRT browser client, written in Javascript using [React](https://reactjs.org/) and [Redux](https://react-redux.js.org/). It runs in a browser and interacts with the WeeRT server.
 
 The following diagram illustrates the relationships between the three different pieces:
 
@@ -38,7 +38,7 @@ Instructions follow.
    $ sudo dpkg-reconfigure tzdata
    ```
 
-2. Install [InfluxDB](https://www.influxdata.com/). WeeRT was tested with version 1.8.10. In particular, _InfluxDB Version 2.x will not work_! The following works on Ubuntu.
+2. Install [InfluxDB](https://www.influxdata.com/products/influxdb/). WeeRT was tested with version 1.8.10. In particular, _InfluxDB Version 2.x will not work_! The following works on Ubuntu.
 
    ```shell
    sudo apt install influxdb
@@ -50,9 +50,9 @@ Instructions follow.
    $ systemctl start influxdb
    ```
 
-4. Download and install [node](https://nodejs.org/en/). WeeRT was tested with version 18.10.0, also known as LTS/Gallium. Later versions should work fine.
+4. Download and install [node](https://nodejs.org/). WeeRT was tested with version 18.10.0, also known as LTS/Gallium. Later versions should work fine.
 
-5. Download WeeRT from the git repository
+5. Download WeeRT from the repository
 
    ```shell
    $ git clone https://github.com/MaffooClock/weewx-weert.git
@@ -129,11 +129,11 @@ The job of the uploader is to post LOOP packets to the WeeRT server (installed a
 
 - The WeeRT server runs on [Node](https://nodejs.org/) using the [Express framework](http://expressjs.com/).
 - The server offers a RESTful API ([described below](#API)) for storing, retrieving, and deleting data measurements.
-- Data are stored in an [InfluxDB](https://www.influxdata.com/) server.
+- Data are stored in an [InfluxDB](https://www.influxdata.com/products/influxdb/) server.
 - Realtime updates are done through a publish - subscribe interface using [Socket.io](https://socket.io).
 - The client asks for the necessary data through the API, then subscribes to any updates.
 - The client view is managed by [React](https://reactjs.org/).
-- The client data state is managed by [Redux](https://redux.js.org/).
+- The client data state is managed by [Redux](https://react-redux.js.org/).
 - Realtime plots are done using [Recharts](http://recharts.org), a charting library, which uses React to create DOM elements. As of 15-Feb-2018 it is still in beta, but seems reasonably stable.
 
 ## Notes
