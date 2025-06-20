@@ -1,26 +1,20 @@
-# WeeRT
+# WeeRT for WeeWX
 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
-## Archived
+## ~~Archived~~ _Forked!_
 
-This repository has been _archived_. It proved too difficult to install and maintain.
+The original author, [Tom Keffer](https://github.com/tkeffer), archived his [repo](https://github.com/tkeffer/weert-js) in February 2025, citing "It proved too difficult to install and maintain." I was bummed to discover this, as I thought it was excellent as-is and had been using it for a few years (with a few customizations, of course). I really liked the React/Redux-based client UI far better than the static HTML, as there's really no other skin like it.
 
-No further development will be done.
+So, I decided to fork this project to try my best to not only keep it alive, but advance its development to keep it current.
 
 ## Overview
 
-WeeRT is a realtime extension for [WeeWX](http://weewx.com), open-source software for 
-your weather station. It consists of three, independent parts:
-- The WeeRT uploader. This is a [WeeWX service](http://weewx.com/docs/customizing.htm#The_weeWX_service_architecture), 
-which arranges for your data to be uploaded from WeeWX to the WeeRT server.
-- The WeeRT server, a real-time logging and display server, written in Javascript and running on 
-[Node](https://nodejs.org/en/), using the [Express framework](https://expressjs.com/). This
-server listens for real-time data updates from WeeWX, then archives them in
-an [InfluxDB](https://www.influxdata.com/time-series-platform/influxdb/) database. It also acts
-as a webserver for the WeeRT client.
-- The WeeRT browser client, written in Javascript using [React](https://reactjs.org/) and [Redux](https://redux.js.org/).
-It runs in a browser and interacts with the WeeRT server.
+WeeRT is a realtime extension for [WeeWX](http://weewx.com), open-source software for your weather station. It consists of three, independent parts:
+
+- The WeeRT uploader. This is a [WeeWX service](http://weewx.com/docs/customizing.htm#The_weeWX_service_architecture), which arranges for your data to be uploaded from WeeWX to the WeeRT server.
+- The WeeRT server, a real-time logging and display server, written in Javascript and running on [Node](https://nodejs.org/en/), using the [Express framework](https://expressjs.com/). This server listens for real-time data updates from WeeWX, then archives them in an [InfluxDB](https://www.influxdata.com/time-series-platform/influxdb/) database. It also acts as a webserver for the WeeRT client.
+- The WeeRT browser client, written in Javascript using [React](https://reactjs.org/) and [Redux](https://redux.js.org/). It runs in a browser and interacts with the WeeRT server.
 
 The following diagram illustrates the relationships between the three different pieces:
 
@@ -38,90 +32,84 @@ Instructions follow.
 
 ## Installing the WeeRT server
 
-1. Due to a limitation in WeeRT, the timezone of your server must be the same as your hardware.
-Hopefully, this limitation can be lifted in the future. To change the timezone on Debian based
-operating systems:
+1. Due to a limitation in WeeRT, the timezone of your server must be the same as your hardware. Hopefully, this limitation can be lifted in the future. To change the timezone on Debian based operating systems:
 
-    ```shell
-    $ sudo dpkg-reconfigure tzdata
-    ```
+   ```shell
+   $ sudo dpkg-reconfigure tzdata
+   ```
 
-2. Install [InfluxDB](https://www.influxdata.com/). WeeRT was tested with
-version 1.8.10. In particular, *InfluxDB Version 2.x will not work*! The following works on Ubuntu. 
-    ```shell
+2. Install [InfluxDB](https://www.influxdata.com/). WeeRT was tested with version 1.8.10. In particular, _InfluxDB Version 2.x will not work_! The following works on Ubuntu.
+
+   ```shell
    sudo apt install influxdb
-    ``` 
- 
-3. If necessary, start it by whatever means is needed for your operating system. This works
-on Ubuntu 22.04:
+   ```
 
-    ```shell
-    $ systemctl start influxdb
-    ```
+3. If necessary, start it by whatever means is needed for your operating system. This works on Ubuntu 22.04:
 
-4. Download and install [node](https://nodejs.org/en/). WeeRT was tested with version 18.10.0,
-also known as LTS/Gallium. Later versions should work fine.
+   ```shell
+   $ systemctl start influxdb
+   ```
+
+4. Download and install [node](https://nodejs.org/en/). WeeRT was tested with version 18.10.0, also known as LTS/Gallium. Later versions should work fine.
 
 5. Download WeeRT from the git repository
 
-    ```shell
-    $ git clone https://github.com/tkeffer/weert-js.git
-    ```
+   ```shell
+   $ git clone https://github.com/MaffooClock/weewx-weert.git
+   ```
 
 6. Enter the WeeRT sub-directory, and install the server dependencies
 
-    ```shell
-    $ cd weert-js
-    $ npm install
-    ```
+   ```shell
+   $ cd weewx-weert
+   $ npm install
+   ```
 
 7. Start the WeeRT server
 
-    ```shell
-    $ npm run start
-    Listening on port 3000
-    ```
+   ```shell
+   $ npm run start
+   Listening on port 3000
+   ```
 
 8. To run the test suites, in another shell download and install `jasmine` globally
 
-    ```shell
-    $ npm install -g jasmine
-    ```
+   ```shell
+   $ npm install -g jasmine
+   ```
 
 9. Run the suites
 
-    ```shell
-    $ npm run test
-    ```
+   ```shell
+   $ npm run test
+   ```
 
 ## Installing the WeeRT uploader on WeeWX
 
 The job of the uploader is to post LOOP packets to the WeeRT server (installed above).
 
-1. Make sure you are running WeeWX V3.8 or later. Earlier versions do
-not support the POST method used by the uploader.
+1. Make sure you are running WeeWX V3.8 or later. Earlier versions do not support the POST method used by the uploader.
 
-2. Put the `weert.py` module (located in the `weewx_extensions` subdirectory) in the 
-WeeWX `user` subdirectory.
+2. Put the `weert.py` module (located in the `weewx_extensions` subdirectory) in the WeeWX `user` subdirectory.
 
 3. Add the following to `weewx.conf`:
 
-    ```ini
-    [StdRestful]
-        ...
-        [[WeeRT]]
-            host = localhost
-            port = 3000
-            user = weert
-            password = weert
+   ```ini
+   [StdRestful]
+       ...
+       [[WeeRT]]
+           host = localhost
+           port = 3000
+           user = weert
+           password = weert
 
-    ...
+   ...
 
-    [Engine]
-        [[Services]]
-            ...
-            restful_services = ..., user.weert.WeeRT
-    ```
+   [Engine]
+       [[Services]]
+           ...
+           restful_services = ..., user.weert.WeeRT
+   ```
 
 4. Run `weewxd`
 
@@ -129,53 +117,42 @@ WeeWX `user` subdirectory.
 
 1. Install, then build the client libraries.
 
-    ```shell
-    cd client
+   ```shell
+   cd client
    npm install
    npm run build
-    ```
+   ```
 
 2. After making sure the WeeRT server is still running, open up a client at [http://localhost:3000](http://localhost:3000).
 
-
 ## General architecture
+
 - The WeeRT server runs on [Node](https://nodejs.org/) using the [Express framework](http://expressjs.com/).
-- The server offers a RESTful API ([described below](#API)) for storing, retrieving,
-  and deleting data measurements.
+- The server offers a RESTful API ([described below](#API)) for storing, retrieving, and deleting data measurements.
 - Data are stored in an [InfluxDB](https://www.influxdata.com/) server.
-- Realtime updates are done through a publish - subscribe interface
-  using [Socket.io](https://socket.io).
+- Realtime updates are done through a publish - subscribe interface using [Socket.io](https://socket.io).
 - The client asks for the necessary data through the API, then subscribes to any updates.
 - The client view is managed by [React](https://reactjs.org/).
 - The client data state is managed by [Redux](https://redux.js.org/).
-- Realtime plots are done using [Recharts](http://recharts.org), a charting library, which uses
-  React to create DOM elements. As of 15-Feb-2018 it is still in beta, but seems reasonably stable.
+- Realtime plots are done using [Recharts](http://recharts.org), a charting library, which uses React to create DOM elements. As of 15-Feb-2018 it is still in beta, but seems reasonably stable.
 
 ## Notes
 
 ### Pub-sub
 
-When new LOOP packets come into WeeRT through the POST interface, they
-are published using [Socket.io](https://socket.io/) (an implementation of WebSockets).
-Interested clients can subscribe to these publications.
+When new LOOP packets come into WeeRT through the POST interface, they are published using [Socket.io](https://socket.io/) (an implementation of WebSockets). Interested clients can subscribe to these publications.
 
 ### Subsampling
 
-Every 5 minutes (configurable), the WeeRT server subsamples the raw, loop, data,
-converting it into evenly spaced records. See file `config/ss_policies.js` for the subsampling
-policies. By default, it is run every 5 minutes, uses measurement 'wxpackets' for its source,
-and measurement 'wxrecords' as its destination.
+Every 5 minutes (configurable), the WeeRT server subsamples the raw, loop, data, converting it into evenly spaced records. See file `config/ss_policies.js` for the subsampling policies. By default, it is run every 5 minutes, uses measurement 'wxpackets' for its source, and measurement 'wxrecords' as its destination.
 
 ### Retention policy
 
-The retention time of the LOOP packets is set by a configuration file,
-but the default is 24 hours. After that, they are discarded.
+The retention time of the LOOP packets is set by a configuration file, but the default is 24 hours. After that, they are discarded.
 
 ### Querying Influx
 
-If you wish to query the database directly using the influx command-line client, you must
-attach the retention policy name. For example, to see all packets a typical session might
-look like (user inputs are in <b>bold</b>):
+If you wish to query the database directly using the influx command-line client, you must attach the retention policy name. For example, to see all packets a typical session might look like (user inputs are in <b>bold</b>):
 
 <pre>
 $ <b>influx -username weert -password weertL</b>
@@ -193,17 +170,13 @@ time                altimeter_pressure console_voltage dewpoint_temperature extr
 1665142893000000000 30.226523472560547 4.81            46.7763303997396     30                 29.468485523943166 49.339                51                  69.7           87                   50.5            default_platform 0                   0         30.208            default_stream 1           0              0          50.5                               
 </pre>
 
-Note how the query asked for measurement `h24.wxpackets`, where `h24` is the default retention policy
-used by WeeRT.
+Note how the query asked for measurement `h24.wxpackets`, where `h24` is the default retention policy used by WeeRT.
 
 ### Log entries
 
-WeeRT can make voluminous entries into your system log. The WeeWX
-uploader will make an entry every LOOP packet, as does the InfluxDB
-database. This can mean thousands of entries per hour.
+WeeRT can make voluminous entries into your system log. The WeeWX uploader will make an entry every LOOP packet, as does the InfluxDB database. This can mean thousands of entries per hour.
 
-The number of uploader entries can be drastically reduced by
-using option `log_success`:
+The number of uploader entries can be drastically reduced by using option `log_success`:
 
 ```ini
 [StdRestful]
@@ -213,17 +186,11 @@ using option `log_success`:
         log_success = false
 ```
 
-Consult the [InfluxDB configuration documentation](https://docs.influxdata.com/influxdb/v1.3/administration/config/)
-for how to control its logging policies.
+Consult the [InfluxDB configuration documentation](https://docs.influxdata.com/influxdb/v1.3/administration/config/) for how to control its logging policies.
 
 ### Observation names
 
-WeeRT uses a different system to name observation types than WeeWX.
-For example, for outside temperature, WeeWX uses `outTemp`, while
-WeeRT uses `out_temperature`. The general pattern is that the last
-part of the observation name, `temperature` in this example, denotes
-the unit group. In WeeWX the unit group must be looked up in a table;
-in WeeRT it can be inferred from the name.
+WeeRT uses a different system to name observation types than WeeWX. For example, for outside temperature, WeeWX uses `outTemp`, while WeeRT uses `out_temperature`. The general pattern is that the last part of the observation name, `temperature` in this example, denotes the unit group. In WeeWX the unit group must be looked up in a table; in WeeRT it can be inferred from the name.
 
 Which brings us to the next topic...
 
@@ -231,129 +198,88 @@ Which brings us to the next topic...
 
 Internally, the WeeRT server makes no assumptions about units.
 
-The client is unit-agnostic, except for the WindCompass, which assumes US
-Customary.
+The client is unit-agnostic, except for the WindCompass, which assumes US Customary.
 
 ### Security
 
-The server requires authentication for any mutating actions, that is,
-any POSTs or DELETEs. The default configuration (file
-`server/config/config.js`) includes a user `weert` with password
-`weert`. These should, obviously, be changed.
+The server requires authentication for any mutating actions, that is, any POSTs or DELETEs. The default configuration (file `server/config/config.js`) includes a user `weert` with password `weert`. These should, obviously, be changed.
 
-The configuration for the WeeWX uploader in `weewx.conf` should be
-changed to match the chosen username and password.
+The configuration for the WeeWX uploader in `weewx.conf` should be changed to match the chosen username and password.
 
 # Data model
 
 ## Background
 
-It is strongly recommended that you read the ["key
-concepts"](https://docs.influxdata.com/influxdb/v1.3/concepts/key_concepts/)
-section of the InfluxDB documentation. In particular, be sure to
-understand the concepts of measurements, tags, and fields. These terms
-are used throughout WeeRT.
+It is strongly recommended that you read the ["key concepts"](https://docs.influxdata.com/influxdb/v1.3/concepts/key_concepts/) section of the InfluxDB documentation. In particular, be sure to understand the concepts of measurements, tags, and fields. These terms are used throughout WeeRT.
 
 ## WeeRT and InfluxDB
 
-WeeRT stores incoming real-time packets into measurement
-`wxpackets`. These are then aggregated and subsampled regularly
-(typically, every 5 minutes) into another measurement, `wxrecords`.
+WeeRT stores incoming real-time packets into measurement `wxpackets`. These are then aggregated and subsampled regularly (typically, every 5 minutes) into another measurement, `wxrecords`.
 
-Data in `wxpackets` use a 24 hour retention policy --- they are purged
-if older than 24 hours.  Data in `wxrecords` are retained
-indefinitely.
+Data in `wxpackets` use a 24 hour retention policy --- they are purged if older than 24 hours. Data in `wxrecords` are retained indefinitely.
 
 ### Schema
 
-InfluxDB does not use a schema. Nevertheless, data is organized in a
-structured, organized way.  Both `wxpackets` and `wxrecords` use
-identical structures.
+InfluxDB does not use a schema. Nevertheless, data is organized in a structured, organized way. Both `wxpackets` and `wxrecords` use identical structures.
 
-WeeRT uses two InfluxDB *tags*: `platform` and `stream`. The former,
-`platform`, is intended to represent a physical presence, such as a
-house, car, or piece of industrial machinery.  The latter, `stream`,
-represents a data stream within the platform, such as a specific
-weather station, or sensor. Like any InfluxDB tags, `platform` and
-`stream` are indexed. The default `platform` is `default_platform`;
-the default `stream` is `default_stream`.
+WeeRT uses two InfluxDB _tags_: `platform` and `stream`. The former, `platform`, is intended to represent a physical presence, such as a house, car, or piece of industrial machinery. The latter, `stream`, represents a data stream within the platform, such as a specific weather station, or sensor. Like any InfluxDB tags, `platform` and `stream` are indexed. The default `platform` is `default_platform`; the default `stream` is `default_stream`.
 
-The observation values, such as `out_temperature`, are stored as
-InfluxDB *fields*.  They are not indexed. Because InfluxDB does not
-use a schema, new data types can be introduced into the data stream at
-any time and they will be stored in the database.
+The observation values, such as `out_temperature`, are stored as InfluxDB _fields_. They are not indexed. Because InfluxDB does not use a schema, new data types can be introduced into the data stream at any time and they will be stored in the database.
 
 The observation time is stored as field `time` in the database.
 
 ## Packets
 
-There are several different ways of representing packet data in the WeeRT / Influx
-ecosystem. It's useful to be aware of the differences.
+There are several different ways of representing packet data in the WeeRT / Influx ecosystem. It's useful to be aware of the differences.
 
-- A __weewx-style packet__. This is the simple, flat data structure
-  that weewx uses. It holds time (in integer seconds), field data, and the
-  unit system used by the data, but no information about platforms or
-  streams. It looks like:
-  
-   ```json
-   {
-     "dateTime" : 1507432417,
-     "outTemp" : 20.5,
-     "outHumidity" : 65.0,
-     "usUnits" : 16
-    }
-    ```
+- A **weewx-style packet**. This is the simple, flat data structure that weewx uses. It holds time (in integer seconds), field data, and the unit system used by the data, but no information about platforms or streams. It looks like:
 
-- What we are calling a __deep packet__. This is a structured packet
-  that the Node client library
-  [node-influx](https://node-influx.github.io/) expects (as do the
-  InfluxDB client libraries for most other languages). It is useful
-  because the InfluxDB "measurement" and "tags" are explicitly
-  represented. Time is in field `time` and it is in *milliseconds*. It
-  looks something like this:
- 
-   ```json
-   {
-     "timestamp" : 1507432417000,
-     "measurement" : "wxpackets",
-     "tags" : {"platform" : "Red barn", "stream" : "Accurite"},
-     "fields" : {"out_temperature" : 20.5, "out_humidity_percent" : 65.0, "unit_system" : 16}
-    }
+  ```json
+  {
+    "dateTime": 1507432417,
+    "outTemp": 20.5,
+    "outHumidity": 65.0,
+    "usUnits": 16
+  }
   ```
-    
-- What we are calling a __flattened packet__. This is what is returned from the
-  [`query`](https://node-influx.github.io/class/src/index.js~InfluxDB.html#instance-method-query)
-  function of node-influx. Unfortunately, it is slightly different
-  from a deep packet. The tag members have been flattened in with the
-  field data, and the time is now in field `time`:
-  
-   ```json
-   {
-     "time" : 1507432417000,
-     "measurement" : "wxpackets",
-     "platform" : "Red barn",
-     "stream" : "Accurite",
-     "out_temperature" : 20.5,
-     "out_humidity_percent" : 65.0,
-     "unit_system" : 16
-    }
-   ```
-    
-- The InfluxDB [__line
-  protocol__](https://docs.influxdata.com/influxdb/v1.2/write_protocols/line_protocol_reference/).
-  This protocol is designed for on-the-wire efficiency. It is not
-  explicitly used within WeeRT. It looks something like this:
- 
-   ```
-   wxpackets,platform="Red barn",stream="Accurite" out_temperature=20.5,out_humidity_percent=65.0,unit_system=16 1507432417000000000
-   ```
 
-WeeRT tries to consistently traffic in "deep packets," and does any conversions
-that might be necessary. Both incoming and outgoing data use this format.
- 
+- What we are calling a **deep packet**. This is a structured packet that the Node client library [node-influx](https://node-influx.github.io/) expects (as do the InfluxDB client libraries for most other languages). It is useful because the InfluxDB "measurement" and "tags" are explicitly represented. Time is in field `time` and it is in _milliseconds_. It looks something like this:
+
+  ```json
+  {
+    "timestamp": 1507432417000,
+    "measurement": "wxpackets",
+    "tags": { "platform": "Red barn", "stream": "Accurite" },
+    "fields": { "out_temperature": 20.5, "out_humidity_percent": 65.0, "unit_system": 16 }
+  }
+  ```
+
+- What we are calling a **flattened packet**. This is what is returned from the [`query`](https://node-influx.github.io/class/src/index.js~InfluxDB.html#instance-method-query) function of node-influx. Unfortunately, it is slightly different from a deep packet. The tag members have been flattened in with the field data, and the time is now in field `time`:
+
+  ```json
+  {
+    "time": 1507432417000,
+    "measurement": "wxpackets",
+    "platform": "Red barn",
+    "stream": "Accurite",
+    "out_temperature": 20.5,
+    "out_humidity_percent": 65.0,
+    "unit_system": 16
+  }
+  ```
+
+- The InfluxDB [**line
+  protocol**](https://docs.influxdata.com/influxdb/v1.2/write_protocols/line_protocol_reference/). This protocol is designed for on-the-wire efficiency. It is not explicitly used within WeeRT. It looks something like this:
+
+  ```
+  wxpackets,platform="Red barn",stream="Accurite" out_temperature=20.5,out_humidity_percent=65.0,unit_system=16 1507432417000000000
+  ```
+
+WeeRT tries to consistently traffic in "deep packets," and does any conversions that might be necessary. Both incoming and outgoing data use this format.
+
 # <a name="API"></a>API
 
-[//]: # (# The following commands will set up the database)
+[//]: # "# The following commands will set up the database"
 [//]: # (curl -XPOST 'http://localhost:8086/query?db=weert' --data-urlencode 'q=DROP MEASUREMENT "examples"')
 [//]: # (curl -XPOST "http://localhost:8086/write?db=weert" --data-binary 'examples,platform=barn,stream=accurite unit_system=1,out_temperature=55.2,sealevel_pressure=29.812 1506713140000000000')
 [//]: # (curl -XPOST "http://localhost:8086/write?db=weert" --data-binary 'examples,platform=barn,stream=accurite unit_system=1,out_temperature=55.3,sealevel_pressure=29.839 1506713200000000000')
@@ -364,17 +290,7 @@ that might be necessary. Both incoming and outgoing data use this format.
 [//]: # (curl -XPOST "http://localhost:8086/write?db=weert" --data-binary 'examples,platform=barn,stream=loft unit_system=1,out_temperature=61.6,sealevel_pressure=29.908 1506713260000000000')
 [//]: # (curl -XPOST "http://localhost:8086/write?db=weert" --data-binary 'examples,platform=barn,stream=loft unit_system=1,out_temperature=61.6,sealevel_pressure=29.910 1506713320000000000')
 
-
-
-
-
-
-
-
-All mutating calls (POSTs and DELETEs) must be authorized through
-an `Authorization` header. It should include
-the word `Basic`, followed by the base64 encoding of the username and password
-with a colon in between. In Python, this looks like:
+All mutating calls (POSTs and DELETEs) must be authorized through an `Authorization` header. It should include the word `Basic`, followed by the base64 encoding of the username and password with a colon in between. In Python, this looks like:
 
 ```python
 import urllib2, base64
@@ -386,9 +302,7 @@ request.add_header("Authorization", "Basic %s" % base64string)
 
 ```
 
-Using `curl`, this can be done by adding the `-u` option, which is done in
-the mutating examples below.
- 
+Using `curl`, this can be done by adding the `-u` option, which is done in the mutating examples below.
 
 ## Get packets
 
@@ -400,23 +314,22 @@ GET /api/v1/measurements/:measurement/packets
 
 **Parameters**
 
-| *Name*          | *Type*  | *Description*                                                                                                       |
-|:----------------|:--------|:--------------------------------------------------------------------------------------------------------------------|
-| `platform`      | string  | Include only packets from platform `platform`.                                                                      |
-| `stream`        | string  | Include only packets from stream `stream`.                                                                          |
-| `start`         | integer | All packets greater than this timestamp in milliseconds will be included in the results. Default: first available packet.          |
-| `stop`          | integer | All packets less than or equal to this timestamp in milliseconds will be included in the results. Default: last available packet.  |
-| `limit`         | integer | Limit the number of returned packets to this value. Default: no limit.                                              |
-| `direction`     | string  | The direction of the sort. Can be either `asc` or `desc`. Default: `asc`.                                           |
-| `group`         | string  | Group by time (*e.g.* '1h''). This will perform a server-defined aggregation for each observation type.             |
-
+| _Name_      | _Type_  | _Description_                                                                                                                     |
+| :---------- | :------ | :-------------------------------------------------------------------------------------------------------------------------------- |
+| `platform`  | string  | Include only packets from platform `platform`.                                                                                    |
+| `stream`    | string  | Include only packets from stream `stream`.                                                                                        |
+| `start`     | integer | All packets greater than this timestamp in milliseconds will be included in the results. Default: first available packet.         |
+| `stop`      | integer | All packets less than or equal to this timestamp in milliseconds will be included in the results. Default: last available packet. |
+| `limit`     | integer | Limit the number of returned packets to this value. Default: no limit.                                                            |
+| `direction` | string  | The direction of the sort. Can be either `asc` or `desc`. Default: `asc`.                                                         |
+| `group`     | string  | Group by time (_e.g._ '1h''). This will perform a server-defined aggregation for each observation type.                           |
 
 **Response code**
 
-| *Status* | *Meaning*             |
-|:---------|:----------------------|
-| 200      | Success               |
-| 400      | Malformed query       |
+| _Status_ | _Meaning_       |
+| :------- | :-------------- |
+| 200      | Success         |
+| 400      | Malformed query |
 
 **Examples**
 
@@ -535,8 +448,7 @@ Connection: keep-alive
 
 ```
 
-Query again, but this time ask for only those packets on stream `loft`, and limit it
-to 2 packets:
+Query again, but this time ask for only those packets on stream `loft`, and limit it to 2 packets:
 
 ```shell
 $ curl -i --silent -X GET 'http://localhost:3000/api/v1/measurements/examples/packets?stream=loft&limit=2'
@@ -580,7 +492,6 @@ Connection: keep-alive
 ```
 
 Query, constraining by time and stream name, returning results in reverse order:
-
 
 ```shell
 $ curl -i -X GET 'http://localhost:3000/api/v1/measurements/examples/packets?start=1506713140000&stop=1506713260000&stream=loft&direction=desc'
@@ -627,22 +538,21 @@ Connection: keep-alive
 
 Return packets with a specific timestamp.
 
-
 ```
 GET /api/v1/measurements/:measurement/packets/:timestamp
 ```
 
 **Parameters**
 
-| *Name*          | *Type*  | *Description*                                   |
-|:----------------|:--------|:------------------------------------------------|
-| `platform` | string  | Include only packets on the platform `platform`.     |
-| `stream`   | string  | Include only packets on the stream `stream`.         |
+| _Name_     | _Type_ | _Description_                                    |
+| :--------- | :----- | :----------------------------------------------- |
+| `platform` | string | Include only packets on the platform `platform`. |
+| `stream`   | string | Include only packets on the stream `stream`.     |
 
 **Response code**
 
-| *Status* | *Meaning*                  |
-|:---------|:---------------------------|
+| _Status_ | _Meaning_                  |
+| :------- | :------------------------- |
 | 200      | Success                    |
 | 400      | Malformed query            |
 | 404      | Measurement does not exist |
@@ -696,8 +606,7 @@ The HTTP request must include an `Authorization` header.
 
 A deep packet must be included in the body of the request.
 
-The packet need not include a value for `measurement`, but, if included,
-it must match the value given in the URL.
+The packet need not include a value for `measurement`, but, if included, it must match the value given in the URL.
 
 The packet must include a value for `timestamp` in milliseconds.
 
@@ -706,14 +615,13 @@ database.
 
 **Response code**
 
-| *Status* | *Meaning*                         |
-|:---------|:----------------------------------|
+| _Status_ | _Meaning_                         |
+| :------- | :-------------------------------- |
 | 201      | Created                           |
 | 400      | Malformed post                    |
 | 415      | Invalid or missing `Content-type` |
 
-If successful, the server will return a response code of 201, with the
-response `Location` field set to the URL of the newly created resource (packet).
+If successful, the server will return a response code of 201, with the response `Location` field set to the URL of the newly created resource (packet).
 
 **Example**
 
@@ -741,11 +649,9 @@ Created
 
 Note how the URL of the new resource is returned in the header `Location`.
 
-
 ## Delete a specific timestamp
 
 Delete packets with a specific timestamp.
-
 
 ```
 DELETE /api/v1/measurements/:measurement/packets/:timestamp
@@ -757,19 +663,18 @@ The HTTP request must include an `Authorization` header.
 
 **Parameters**
 
-| *Name*     | *Type*  | *Description*                                                                                 |
-|:-----------|:--------|:----------------------------------------------------------------------------------------------|
-| `platform` | string  | Delete only packets on the platform `platform`.                                               |
-| `stream`   | string  | Delete only packets on the stream `stream`.                                                   |
+| _Name_     | _Type_ | _Description_                                   |
+| :--------- | :----- | :---------------------------------------------- |
+| `platform` | string | Delete only packets on the platform `platform`. |
+| `stream`   | string | Delete only packets on the stream `stream`.     |
 
 **Response code**
 
-| *Status* | *Meaning*             |
-|:---------|:----------------------|
-| 204      | Success               |
+| _Status_ | _Meaning_ |
+| :------- | :-------- |
+| 204      | Success   |
 
-The same response code (204) is returned irregardless of whether or not any packet fitting the criteria
-actually existed in the database.
+The same response code (204) is returned irregardless of whether or not any packet fitting the criteria actually existed in the database.
 
 **Example**
 
@@ -786,7 +691,6 @@ Connection: keep-alive
 
 ```
 
-
 ## Get meta-information about a measurement.
 
 Query the database for information about an InfluxDB measurement.
@@ -795,16 +699,14 @@ Query the database for information about an InfluxDB measurement.
 GET /api/v1/measurements/:measurement
 ```
 
-
 **Response code**
 
-| *Status* | *Meaning*             |
-|:---------|:----------------------|
+| _Status_ | _Meaning_             |
+| :------- | :-------------------- |
 | 200      | Success               |
 | 404      | Measurement not found |
 
-If successful, the server will return an array whose elements are the series
-in measurement `measurement`.
+If successful, the server will return an array whose elements are the series in measurement `measurement`.
 
 **Examples**
 
@@ -835,8 +737,7 @@ Connection: keep-alive
 
 ```
 
-Do the example again, but using a bogus measurement name. It returns
-a 404 "Not Found" status code.
+Do the example again, but using a bogus measurement name. It returns a 404 "Not Found" status code.
 
 ```shell
 $ curl -i --silent -X GET http://localhost:3000/api/v1/measurements/foo
@@ -863,26 +764,23 @@ GET /api/v1/measurements/:measurement/stats
 
 **Parameters**
 
-| *Name*      | *Type*  | *Description*                                                                                     |
-|:------------|:--------|:--------------------------------------------------------------------------------------------------|
-| `platform`  | string  | Include only data from platform `platform`. Default is to include all platforms.                  |
-| `stream`    | string  | Include only data from stream `stream`. Default is to include all streams.                        |
-| `span`      | string  | Return statistics for the given time span. Choices are `day`,`week`, `month` or `year`. Required. |
-| `now`       | integer | This variable is a time in nanoseconds somewhere in that `span`. Default is the present time.     |
-
+| _Name_     | _Type_  | _Description_                                                                                     |
+| :--------- | :------ | :------------------------------------------------------------------------------------------------ |
+| `platform` | string  | Include only data from platform `platform`. Default is to include all platforms.                  |
+| `stream`   | string  | Include only data from stream `stream`. Default is to include all streams.                        |
+| `span`     | string  | Return statistics for the given time span. Choices are `day`,`week`, `month` or `year`. Required. |
+| `now`      | integer | This variable is a time in nanoseconds somewhere in that `span`. Default is the present time.     |
 
 **Response code**
 
-| *Status* | *Meaning*             |
-|:---------|:----------------------|
-| 200      | Success               |
-| 400      | Malformed query       |
+| _Status_ | _Meaning_       |
+| :------- | :-------------- |
+| 200      | Success         |
+| 400      | Malformed query |
 
 **Example**
 
-Get the statistics for the day surrounding the sample data. Note that only a handful of the returned
-values are non-null. This is because statistics, unlike other queries, require a schema to specify not
-only which types are to be returned, but also which aggregations are to be run against those types.
+Get the statistics for the day surrounding the sample data. Note that only a handful of the returned values are non-null. This is because statistics, unlike other queries, require a schema to specify not only which types are to be returned, but also which aggregations are to be run against those types.
 
 For the sample data, most of these types were not inserted into the database. Hence, their statistics are null.
 
@@ -1106,10 +1004,9 @@ The HTTP request must include an `Authorization` header.
 
 **Return status**
 
-| *Status* | *Meaning*             |
-|:---------|:----------------------|
-| 204      | Success / NO CONTENT  |
-
+| _Status_ | _Meaning_            |
+| :------- | :------------------- |
+| 204      | Success / NO CONTENT |
 
 **Examples**
 
@@ -1126,9 +1023,7 @@ Connection: keep-alive
 
 ```
 
-
-Do the example again, but using a bogus measurement name. It should
-return the same status code, 204.
+Do the example again, but using a bogus measurement name. It should return the same status code, 204.
 
 ```shell
 $ curl -u weert:weert -i --silent -X DELETE 'http://localhost:3000/api/v1/measurements/foo'
@@ -1140,7 +1035,6 @@ Date: Sat, 10 Mar 2018 22:53:29 GMT
 Connection: keep-alive
 
 ```
-
 
 ## About
 
@@ -1156,15 +1050,14 @@ None
 
 **Response code**
 
-| *Status* | *Meaning*             |
-|:---------|:----------------------|
-| 200      | Success               |
+| _Status_ | _Meaning_ |
+| :------- | :-------- |
+| 200      | Success   |
 
-If successful, the server will return a JSON structure holding information about the uptime of
-the operating system, uptime of the WeeRT process, the Node version number, and the WeeRT
-server version number.
+If successful, the server will return a JSON structure holding information about the uptime of the operating system, uptime of the WeeRT process, the Node version number, and the WeeRT server version number.
 
 **Example**
+
 ```shell
 $ curl -i --silent -X GET 'http://localhost:3000/api/v1/about
 
@@ -1180,8 +1073,12 @@ Connection: keep-alive
 {"server_uptime":365124,"weert_uptime":413.837,"node_version":"v10.15.2","weert_version":"0.6.0"}
 ```
 
+# Problems and getting help
+
+The [issues](../../issues) feature is strictly for reporting bugs, suggestions, or other issues directly related to _source code_. If you're experiencing difficulties deploying this project or need help getting it to work, **do not** open an issue; "help me" issues will be closed outright.
+
 # License & Copyright
 
-Copyright (c) 2015-2019 Tom Keffer <tkeffer@gmail.com>
+Copyright (c) 2015-2019 Tom Keffer
 
-  See the file LICENSE for your full rights.
+See the [LICENSE](./LICENSE) file for your full rights.
